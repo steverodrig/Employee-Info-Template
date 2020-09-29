@@ -11,6 +11,9 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 const render = require("./lib/htmlRenderer");
 
 
+// Input function, holds all other functions to get info from user.  Will need to export all funcgions
+// CreateManager, inquirer prompts, .then new Manager, pass in profile data.  
+
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
 
@@ -33,3 +36,6 @@ const render = require("./lib/htmlRenderer");
 // for further information. Be sure to test out each class and verify it generates an
 // object with the correct structure and methods. This structure will be crucial in order
 // for the provided `render` function to work! ```
+
+
+// Creat build Team functiong fs.writefilesync (team.html, render(data), utf8)
