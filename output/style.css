@@ -1,0 +1,28 @@
+.body {
+    background-color: #E9EAEC;
+}
+
+.team-heading {
+    background-color: olive;
+    color: black;
+    font-family: 'Kanit', sans-serif;
+    text-shadow: 3px 3px 3px #E9EAEC;
+}
+
+.team-area  {
+    font-family: 'Kanit', sans-serif;
+}
+
+.employee-card {
+    box-shadow: 5px 5px 5px grey;
+    border-radius: 12px;
+}
+
+.card-header {
+    background-color: beige;
+    color: black;
+}
+
+.text {
+    font-size: 5rem;
+}
