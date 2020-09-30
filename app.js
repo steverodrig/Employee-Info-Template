@@ -1,6 +1,7 @@
 const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
+const Employee = require("./lib/Employee");
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
@@ -10,32 +11,131 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
+const teamMembers = []
 
-// Input function, holds all other functions to get info from user.  Will need to export all funcgions
-// CreateManager, inquirer prompts, .then new Manager, pass in profile data.  
+function init() {
+    return inquirer.prompt([
+        {
+            type: "input",
+            name: "name",
+            message: "What is the employees name?",
+        },
+        {
+            type: "input",
+            name: "id",
+            message: "What is the employees id?",
+        },
+        {
+            type: "input",
+            name: "email",
+            message: "What is the employees email address?",
+        },
+        {
+            type: "list",
+            name: "role",
+            message: "Select employees role on the team.",
+            choices: ["Manager", "Engineer", "Intern"],
+        }
+    ])
+}
 
-// Write code to use inquirer to gather information about the development team members,
-// and to create objects for each team member (using the correct classes as blueprints!)
+function manager() {
+    return inquirer.prompt([
 
-// After the user has input all employees desired, call the `render` function (required
-// above) and pass in an array containing all employee objects; the `render` function will
-// generate and return a block of HTML including templated divs for each employee!
+        {
+            type: "input",
+            name: "officenumber",
+            message: "What is manager's office number?",
+        },
 
-// After you have your html, you're now ready to create an HTML file using the HTML
-// returned from the `render` function. Now write it to a file named `team.html` in the
-// `output` folder. You can use the variable `outputPath` above target this location.
-// Hint: you may need to check if the `output` folder exists and create it if it
-// does not.
+    ])
+}
 
-// HINT: each employee type (manager, engineer, or intern) has slightly different
-// information; write your code to ask different questions via inquirer depending on
-// employee type.
+function engineer() {
+    return inquirer.prompt([
 
-// HINT: make sure to build out your classes first! Remember that your Manager, Engineer,
-// and Intern classes should all extend from a class named Employee; see the directions
-// for further information. Be sure to test out each class and verify it generates an
-// object with the correct structure and methods. This structure will be crucial in order
-// for the provided `render` function to work! ```
+        {
+            type: "input",
+            name: "github",
+            message: "What is engineer's Github user name?",
+        }
+    ])
+}
 
+function intern() {
+    return inquirer.prompt([
 
-// Creat build Team functiong fs.writefilesync (team.html, render(data), utf8)
+        {
+            type: "input",
+            name: "school",
+            message: "What school does the intern attend?",
+        }
+    ])
+}
+
+function run() {
+    init()
+        .then(function (data) {
+
+            const pos = data.role;
+            const emp = new Employee(data.name, data.id, data.email)
+
+            switch (pos) {
+
+                case "Manager":
+                    return manager()
+                        .then(function (data) {
+                            var man = new Manager(emp.name, emp.id, emp.email, data.officenumber);
+                            teamMembers.push(man);
+                        });
+
+                case "Engineer":
+                    return engineer()
+                        .then(function (data) {
+                            var eng = new Engineer(emp.name, emp.id, emp.email, data.github);
+                            teamMembers.push(eng);
+                        });
+
+                case "Intern":
+                    return intern()
+                        .then(function (data) {
+                            var int = new Intern(emp.name, emp.id, emp.email, data.school);
+                            teamMembers.push(int);
+                        });
+            }
+        })
+
+        .then(function cont() {
+            return inquirer.prompt([
+                {
+                    type: "list",
+                    name: "continue",
+                    message: "Do you want to add more team members?",
+                    choices: ["Yes", "No"],
+                }
+            ])
+        })
+
+        .then(function (data) {
+            const cont = data.continue
+            switch (cont) {
+                case "Yes":
+                    return run();
+
+                case "No":
+                    break;
+            }
+        })
+
+        .then(function () {
+
+            const team = render(teamMembers)
+
+            return fs.writeFileSync(outputPath, team)
+        })
+
+        .then(function () {
+            console.log("Successfully wrote to team.html");
+        })
+};
+run();
